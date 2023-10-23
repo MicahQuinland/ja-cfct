@@ -31,7 +31,8 @@ resources:
         - COTS
         - Shared Services
 
-  ## Cloudformation 
+# Governance Stacks
+
   - name: permissions-boundary
     description: Permission boundary for accounts
     resource_file: ./templates/permission-boundary.yml
@@ -44,8 +45,6 @@ resources:
         - Sandbox:SubSandbox
     regions:
         - us-east-1
-
-# ############
 
   - name: config-aggregator
     resource_file: templates/config-org-aggregator.yaml
