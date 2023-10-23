@@ -7,22 +7,55 @@ enable_stack_set_deletion: false
 resources:
 
   ## SCPs
-  - name: fincrime-guardrails
-    description: fincrime guardrails to replace preventive guardrails
-    resource_file: ./policies/fincrime-scp-services.json
+  # - name: fincrime-guardrails
+  #   description: fincrime guardrails to replace preventive guardrails
+  #   resource_file: ./policies/fincrime-scp-services.json
+  #   deploy_method: scp
+  #   deployment_targets:
+      # organizational_units:
+      #   - Sandbox
+      #   - Sandbox-b
+      #   - Sandbox-c
+
+  # - name: fincrime-guardrails-for-COTS
+  #   description: fincrime guardrails for COTS
+  #   resource_file: ./policies/fincrime-scp-services-cots.json
+  #   deploy_method: scp
+  #   deployment_targets:
+  #     organizational_units:
+  #       - COTS
+
+  - name: scp1
+    description: scp1
+    resource_file: policies/scp-split/baseline-scp-1-no-ip-consolidated.json
     deploy_method: scp
-    deployment_targets:
+    deployment_targets: # accounts property is not supported for SCPs
       organizational_units:
         - Sandbox
         - Sandbox-b
         - Sandbox-c
+        - COTS
 
-  - name: fincrime-guardrails-for-COTS
-    description: fincrime guardrails for COTS
-    resource_file: ./policies/fincrime-scp-services-cots.json
+  - name: scp2
+    description: scp2
+    resource_file: policies/scp-split/baseline-scp-2-condensed.json
     deploy_method: scp
-    deployment_targets:
+    deployment_targets: # accounts property is not supported for SCPs
       organizational_units:
+        - Sandbox
+        - Sandbox-b
+        - Sandbox-c
+        - COTS
+
+  - name: scp3
+    description: scp3
+    resource_file: policies/scp-split/baseline-scp-3-condensed.json
+    deploy_method: scp
+    deployment_targets: # accounts property is not supported for SCPs
+      organizational_units:
+        - Sandbox
+        - Sandbox-b
+        - Sandbox-c
         - COTS
 
   ## Clouformation 
@@ -38,39 +71,6 @@ resources:
         - Sandbox:SubSandbox
     regions:
         - us-east-1
-
-#   - name: scp1
-#     description: scp1
-#     resource_file: policies/scp-split/baseline-scp-1-no-ip-consolidated.json
-#     deploy_method: scp
-#     deployment_targets: # accounts property is not supported for SCPs
-#       organizational_units:
-#         - Sandbox
-#         # - Security
-#         - Dev
-#         - Shared-Services
-
-#   - name: scp2
-#     description: scp2
-#     resource_file: policies/scp-split/baseline-scp-2-condensed.json
-#     deploy_method: scp
-#     deployment_targets: # accounts property is not supported for SCPs
-#       organizational_units:
-#         - Sandbox
-#         # - Security
-#         - Dev
-#         - Shared-Services
-
-#   - name: scp3
-#     description: scp3
-#     resource_file: policies/scp-split/baseline-scp-3-condensed.json
-#     deploy_method: scp
-#     deployment_targets: # accounts property is not supported for SCPs
-#       organizational_units:
-#         - Sandbox
-#         # - Security
-#         - Dev
-#         - Shared-Services
 
 # ############
 

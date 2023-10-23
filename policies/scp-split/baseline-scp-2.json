@@ -129,7 +129,7 @@
       "Condition": {
         "StringNotLike": {
           "sns:Endpoint": [
-            "*@pwc.com",
+            "*@amazon.com",
             "arn:aws:sqs:*:*:*",
             "arn:aws:lambda:*:*:*"
           ]
