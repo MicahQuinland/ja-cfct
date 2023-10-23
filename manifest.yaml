@@ -116,10 +116,8 @@ resources:
       - us-west-2
 
   - name: managed-cis-pack
-    resource_file: templates/conformance-pack-template.yaml
+    resource_file: templates/managed-conformance-pack-template.yaml
     parameters:
-      - parameter_key: LambdaAccountId
-        parameter_value: 564707250760
       - parameter_key: ConformancePackName
         parameter_value: managed-cis-pack
       - parameter_key: TemplateS3Uri
@@ -128,10 +126,10 @@ resources:
     deployment_targets:
       organizational_units:
         - Sandbox
-        - Sandbox-b
-        - Sandbox-c
-        - COTS
-        - Shared Services
+        # - Sandbox-b
+        # - Sandbox-c
+        # - COTS
+        # - Shared Services
     regions:
       - us-east-1
       - us-west-2

@@ -1,0 +1,14 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Parameters:
+  ConformancePackName:
+    Description: Conformance Pack Name
+    Type: String
+  TemplateS3Uri:
+    Description: Conformance Pack S3 URI
+    Type: String
+Resources:
+    CloudFormationCanaryPack:
+        Type: AWS::Config::ConformancePack
+        Properties:
+          ConformancePackName: !Ref ConformancePackName
+          TemplateS3Uri: !Ref TemplateS3Uri
