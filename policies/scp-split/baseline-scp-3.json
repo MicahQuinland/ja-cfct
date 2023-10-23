@@ -2,7 +2,6 @@
   "Version": "2012-10-17",
   "Statement": [
     {
-      "Sid": "AllowOnlyForCertainRoles",
       "Effect": "Deny",
       "Action": [
         "directconnect:Allocate*",
@@ -102,7 +101,6 @@
       }
     },
     {
-      "Sid": "DenyChangesOnSecurityHub",
       "Effect": "Deny",
       "Action": [
         "securityhub:A*",

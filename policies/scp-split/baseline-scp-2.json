@@ -2,7 +2,6 @@
   "Version": "2012-10-17",
   "Statement": [
     {
-      "Sid": "DenyActionToSpecificCloudFormation",
       "Effect": "Deny",
       "Action": [
         "cloudformation:Cancel*",
@@ -31,7 +30,6 @@
       }
     },
     {
-      "Sid": "PreventLambdaURLsandPublicLambda",
       "Effect": "Deny",
       "Action": [
         "lambda:CreateFunctionUrlConfig",
@@ -40,7 +38,6 @@
       "Resource": "arn:aws:lambda:*:*:function:*"
     },
     {
-      "Sid": "DenyKMSActions",
       "Effect": "Deny",
       "Action": [
         "kms:ScheduleKeyDeletion",
@@ -57,7 +54,6 @@
       }
     },
     {
-      "Sid": "DenyAWSMarketplaceAccess",
       "Effect": "Deny",
       "Action": [
         "aws-marketplace:*"
@@ -67,7 +63,6 @@
       ]
     },
     {
-      "Sid": "DenyBillingChanges",
       "Effect": "Deny",
       "Action": [
         "aws-portal:ModifyAccount",
@@ -86,7 +81,6 @@
       }
     },
     {
-      "Sid": "DenyDisableEMRPublicAccessBlock",
       "Effect": "Deny",
       "Action": [
         "elasticmapreduce:PutBlockPublicAccessConfiguration"
@@ -96,7 +90,6 @@
       ]
     },
     {
-      "Sid": "PreventPublicSecrets",
       "Effect": "Deny",
       "Action": "secretsmanager:PutResourcePolicy",
       "Resource": "*",
@@ -107,7 +100,6 @@
       }
     },
     {
-      "Sid": "ProtectRejectServiceCatalog",
       "Effect": "Deny",
       "Action": "servicecatalog:RejectPortfolioShare",
       "Resource": "*",
@@ -120,7 +112,6 @@
       }
     },
     {
-      "Sid": "ProtectSendMessageToExternalEmail",
       "Effect": "Deny",
       "Action": [
         "sns:Subscribe"
@@ -149,7 +140,6 @@
       }
     },
     {
-      "Sid": "ProtectAssumeAdminRoles",
       "Effect": "Deny",
       "Action": "sts:AssumeRole",
       "Resource": [
@@ -160,6 +150,105 @@
         "ArnNotLikeIfExists": {
           "aws:PrincipalArn": [
             "arn:aws:iam::*:role/AWSControlTowerExecution"
+          ]
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": [
+        "directconnect:Allocate*",
+        "directconnect:Confirm*",
+        "directconnect:Create*",
+        "directconnect:Delete*",
+        "directconnect:Disassociate*",
+        "directconnect:Update*",
+        "ec2:DeleteFlowLogs",
+        "ec2:AcceptTransitGatewayVpcAttachment",
+        "ec2:AcceptVpcEndpointConnections",
+        "ec2:AcceptVpcPeeringConnection",
+        "ec2:AssociateRouteTable",
+        "ec2:AssociateSubnetCidrBlock",
+        "ec2:AssociateTransitGatewayRouteTable",
+        "ec2:AssociateVpcCidrBlock",
+        "ec2:AttachClassicLinkVpc",
+        "ec2:AttachInternetGateway",
+        "ec2:AttachVpnGateway",
+        "ec2:CreateDhcpOptions",
+        "ec2:CreateEgressOnlyInternetGateway",
+        "ec2:CreateInternetGateway",
+        "ec2:CreateNatGateway",
+        "ec2:CreateNetworkAcl",
+        "ec2:CreateNetworkAclEntry",
+        "ec2:CreateRoute",
+        "ec2:CreateRouteTable",
+        "ec2:CreateSubnet",
+        "ec2:CreateTransitGateway*",
+        "ec2:CreateVpc",
+        "ec2:CreateVpcEndpoint",
+        "ec2:CreateVpcEndpointConnectionNotification",
+        "ec2:CreateVpcEndpointServiceConfiguration",
+        "ec2:CreateVpcPeeringConnection",
+        "ec2:CreateVpnConnection",
+        "ec2:CreateVpnConnectionRoute",
+        "ec2:CreateVpnGateway",
+        "ec2:DeleteEgressOnlyInternetGateway",
+        "ec2:DeleteInternetGateway",
+        "ec2:DeleteNatGateway",
+        "ec2:DeleteNetworkAcl",
+        "ec2:DeleteNetworkAclEntry",
+        "ec2:DeleteRoute",
+        "ec2:DeleteRouteTable",
+        "ec2:DeleteSubnet",
+        "ec2:DeleteVpc",
+        "ec2:DeleteVpcEndpointConnectionNotifications",
+        "ec2:DeleteVpcEndpoints",
+        "ec2:DeleteVpcEndpointServiceConfigurations",
+        "ec2:DeleteVpcPeeringConnection",
+        "ec2:DeleteVpnConnection",
+        "ec2:DeleteVpnConnectionRoute",
+        "ec2:DeleteVpnGateway",
+        "ec2:DisableVgwRoutePropagation",
+        "ec2:DisassociateRouteTable",
+        "ec2:EnableVgwRoutePropagation",
+        "ec2:EnableVpcClassicLink",
+        "ec2:EnableVpcClassicLinkDnsSupport",
+        "ec2:ModifySubnetAttribute",
+        "ec2:ModifyVpcAttribute",
+        "ec2:ModifyVpcEndpoint",
+        "ec2:ModifyVpcEndpointConnectionNotification",
+        "ec2:ModifyVpcEndpointServiceConfiguration",
+        "ec2:ModifyVpcEndpointServicePermissions",
+        "ec2:ModifyVpcPeeringConnectionOptions",
+        "ec2:ModifyVpcTenancy",
+        "ec2:RejectVpcEndpointConnections",
+        "ec2:RejectVpcPeeringConnection",
+        "ec2:ReplaceRoute",
+        "ec2:ReplaceRouteTableAssociation",
+        "ram:AcceptResourceShareInvitation",
+        "ram:AssociateResourceShare",
+        "ram:CreateResourceShare",
+        "ram:DeleteResourceShare",
+        "ram:DisassociateResourceShare",
+        "ram:EnableSharingWithAwsOrganization",
+        "ram:RejectResourceShareInvitation",
+        "ram:UpdateResourceShare",
+        "ec2:AssociateAddress",
+        "ec2:AllocateAddress",
+        "logs:DeleteLogGroup",
+        "logs:DeleteLogStream"
+      ],
+      "Resource": [
+        "*"
+      ],
+      "Condition": {
+        "StringNotLike": {
+          "aws:PrincipalARN": [
+            "arn:aws:iam::*:role/AWSCloudFormationStackSetExecutionRole",
+            "arn:aws:iam::*:role/SCVpcTemplatesProductLaunchRole",
+            "arn:aws:iam::*:role/AWSControlTowerExecution",
+            "arn:aws:iam::*:role/VPCProductLaunchLambdaRole",
+            "arn:aws:iam::*:role/CustomRouteTableRole-*"
           ]
         }
       }
