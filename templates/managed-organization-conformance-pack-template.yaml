@@ -13,4 +13,4 @@ Resources:
           OrganizationConformancePackName: !Ref ConformancePackName
           TemplateS3Uri: !Ref TemplateS3Uri
           ExcludedAccounts: 
-            - 869465339841
+            - 262534548841

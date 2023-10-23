@@ -5,7 +5,7 @@ Parameters:
     MaxLength: '12'
     MinLength: '12'
     Type: String
-    Default: "790929323776"
+    Default: "564707250760"
   ConformancePackName:
     Description: Conformance Pack Name
     Type: String

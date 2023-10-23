@@ -34,7 +34,7 @@ Parameters:
     MaxLength: 19
   PrincipalOrgID:
     Type: String
-    Default: "o-u5586ti0us"
+    Default: "o-dgk1fkh00t"
   GitRepositoryName:
     Description: Name of the Git repository that contains custom Control Tower configuration. The suffix .git is prohibited.
     Default: MicahQuinland/rdk-pipeline

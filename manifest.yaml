@@ -90,14 +90,14 @@ resources:
     regions:
       - us-east-1
 
-#   - name: rdk-pipeline
-#     resource_file: templates/rdk-pipeline-github-noVPC.yaml
-#     deploy_method: stack_set
-#     deployment_targets:
-#       accounts: 
-#         - 564707250760
-#     regions:
-#       - us-east-1
+  - name: rdk-pipeline
+    resource_file: templates/rdk-pipeline-github-noVPC.yaml
+    deploy_method: stack_set
+    deployment_targets:
+      accounts: 
+        - 564707250760
+    regions:
+      - us-east-1
 
 #   - name: regional-fms
 #     resource_file: templates/waf/fms-waf-alb-apigw.yaml
