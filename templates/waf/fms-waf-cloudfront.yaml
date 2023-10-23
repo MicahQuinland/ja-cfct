@@ -1,0 +1,53 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  GlobalIPSet:
+    Type: 'AWS::WAFv2::IPSet'
+    Properties:
+      Description: Global IPSet for Cloudfront whitelist 
+      Name: CLOUDFRONT-IPSet
+      Scope: CLOUDFRONT
+      IPAddressVersion: IPV4
+      Addresses:
+        - 24.125.118.95/32
+
+  GlobalRuleGroup:
+    Type: 'AWS::WAFv2::RuleGroup'
+    Properties:
+      Name: CloudFront-RuleGroup
+      Scope: CLOUDFRONT
+      Description: Global Rule Group for CloudFront
+      VisibilityConfig:
+        SampledRequestsEnabled: true
+        CloudWatchMetricsEnabled: true
+        MetricName: GlobalWAFRuleGroupMetrics
+      Capacity: 1
+      Rules:
+        - Name: RuleOne
+          Priority: 0
+          Statement:
+            IPSetReferenceStatement:
+              Arn: !GetAtt GlobalIPSet.Arn
+          Action:
+            Allow: {}
+          VisibilityConfig:
+            SampledRequestsEnabled: true
+            CloudWatchMetricsEnabled: true
+            MetricName: globalwafipsetmetric
+
+  CloudFrontPolicy1:
+      Type: AWS::FMS::Policy
+      Properties:
+        ExcludeResourceTags: false
+        PolicyName: Cloudfront-WAF-Policy1
+        RemediationEnabled: true
+        ResourceType: AWS::CloudFront::Distribution
+        ResourcesCleanUp: true
+        SecurityServicePolicyData:
+          Type: WAFV2
+          ManagedServiceData: !Sub '{"type":"WAFV2",
+                                  "preProcessRuleGroups":[{
+                                  "ruleGroupType":"RuleGroup",
+                                  "ruleGroupArn":"${GlobalRuleGroup.Arn}",
+                                  "overrideAction":{"type":"NONE"}}],
+                                  "postProcessRuleGroups":[],
+                                  "defaultAction":{"type":"BLOCK"}}'

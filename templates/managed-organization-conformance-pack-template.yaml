@@ -1,0 +1,16 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Parameters:
+  ConformancePackName:
+    Description: Conformance Pack Name
+    Type: String
+  TemplateS3Uri:
+    Description: Conformance Pack S3 URI
+    Type: String
+Resources:
+    CloudFormationOrgPack:
+        Type: AWS::Config::OrganizationConformancePack
+        Properties:
+          OrganizationConformancePackName: !Ref ConformancePackName
+          TemplateS3Uri: !Ref TemplateS3Uri
+          ExcludedAccounts: 
+            - 869465339841

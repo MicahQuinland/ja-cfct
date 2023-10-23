@@ -1,0 +1,603 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "RestricttoIP",
+      "Effect": "Deny",
+      "Action": "*",
+      "Resource": "*",
+      "Condition": {
+        "NotIpAddress": {
+          "aws:SourceIp": [
+            "155.201.150.29/32",
+            "155.201.150.30/32",
+            "201.56.5.238/32",
+            "62.204.63.6/32",
+            "62.204.63.14/32",
+            "203.127.106.30/32",
+            "20.226.116.65/32",
+            "20.219.193.218/32"
+          ]
+        },
+        "Bool": {
+          "aws:ViaAWSService": "false"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "NotAction": [
+        "*"
+      ],
+      "Resource": [
+        "*"
+      ],
+      "Condition": {
+        "StringNotEquals": {
+          "aws:RequestedRegion": [
+            "us-east-1",
+            "us-west-2",
+            "eu-west-1",
+            "eu-central-1",
+            "ap-southeast-2",
+            "ap-south-1",
+            "ap-southeast-1"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "DenyIAMActions",
+      "Effect": "Deny",
+      "Action": [
+        "iam:CreateAccessKey",
+        "iam:CreateGroup",
+        "iam:CreateUser",
+        "iam:CreateSAMLProvider",
+        "iam:CreateOpenIDConnectProvider",
+        "iam:ChangePassword",
+        "iam:CreateLoginProfile",
+        "iam:DeleteSAMLProvider",
+        "iam:UntagSAMLProvider",
+        "iam:UpdateLoginProfile"
+      ],
+      "Resource": [
+        "*"
+      ]
+    },
+    {
+      "Sid": "DenyExternalOIDC",
+      "Effect": "Deny",
+      "Action": [
+        "iam:AddClientIDToOpenIDConnectProvider",
+        "iam:CreateOpenIDConnectProvider",
+        "iam:DeleteOpenIDConnectProvider",
+        "iam:RemoveClientIDFromOpenIDConnectProvider",
+        "iam:UntagOpenIDConnectProvider",
+        "iam:UpdateOpenIDConnectProviderThumbprint"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "denydisables3publicaccessataccountlevelpolicy",
+      "Effect": "Deny",
+      "Action": [
+        "s3:PutAccountPublicAccessBlock",
+        "s3:PutBucketPublicAccessBlock"
+      ],
+      "Resource": [
+        "*"
+      ]
+    },
+    {
+      "Sid": "DenyRISavingsPlans",
+      "Effect": "Deny",
+      "Action": [
+        "savingsplans:*",
+        "ec2:PurchaseHostReservation",
+        "ec2:PurchaseReservedInstancesOffering",
+        "ec2:AcceptReservedInstancesExchangeQuote",
+        "ec2:CancelReservedInstancesListing",
+        "ec2:CreateReservedInstancesListing",
+        "ec2:DeleteQueuedReservedInstances",
+        "ec2:DescribeReservedInstancesListings",
+        "ec2:DescribeReservedInstancesModifications",
+        "ec2:DescribeReservedInstancesOfferings",
+        "ec2:GetHostReservationPurchasePreview",
+        "ec2:GetReservedInstancesExchangeQuote",
+        "ec2:ModifyReservedInstances"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "NothingShouldDoThese",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:CreateDefaultSubnet",
+        "ec2:CreateDefaultVpc"
+      ],
+      "Resource": [
+        "*"
+      ]
+    },
+    {
+      "Sid": "PreventEnablingExternalPrincipals",
+      "Effect": "Deny",
+      "Action": [
+        "ram:CreateResourceShare",
+        "ram:UpdateResourceShare"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "Bool": {
+          "ram:AllowsExternalPrincipals": "true"
+        }
+      }
+    },
+    {
+      "Sid": "RequireImdsV2",
+      "Effect": "Deny",
+      "Action": "ec2:RunInstances",
+      "Resource": "arn:aws:ec2:*:*:instance/*",
+      "Condition": {
+        "StringNotEquals": {
+          "ec2:MetadataHttpTokens": "required"
+        }
+      }
+    },
+    {
+      "Sid": "StatementForOtherRDS",
+      "Effect": "Deny",
+      "Action": [
+        "rds:CreateDBInstance"
+      ],
+      "Resource": [
+        "*"
+      ],
+      "Condition": {
+        "ForAnyValue:StringEquals": {
+          "rds:DatabaseEngine": [
+            "mariadb",
+            "mysql",
+            "oracle-ee",
+            "oracle-se2",
+            "oracle-se1",
+            "oracle-se",
+            "postgres",
+            "sqlserver-ee",
+            "sqlserver-se",
+            "sqlserver-ex",
+            "sqlserver-web"
+          ]
+        },
+        "Bool": {
+          "rds:StorageEncrypted": "false"
+        }
+      }
+    },
+    {
+      "Sid": "StatementForAurora",
+      "Effect": "Deny",
+      "Action": [
+        "rds:CreateDBCluster"
+      ],
+      "Resource": [
+        "*"
+      ],
+      "Condition": {
+        "Bool": {
+          "rds:StorageEncrypted": "false"
+        }
+      }
+    },
+    {
+      "Sid": "ForceEBSencrypt",
+      "Effect": "Deny",
+      "Action": "ec2:CreateVolume",
+      "Resource": "*",
+      "Condition": {
+        "Bool": {
+          "ec2:Encrypted": "false"
+        }
+      }
+    },
+    {
+      "Sid": "DenyRootAccess",
+      "Effect": "Deny",
+      "Action": "*",
+      "Resource": "*",
+      "Condition": {
+        "ArnLike": {
+          "aws:PrincipalARN": [
+            "arn:aws:iam::*:root"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "DenyRootAccessKey",
+      "Effect": "Deny",
+      "Action": [
+        "iam:CreateAccessKey"
+      ],
+      "Resource": [
+        "arn:aws:iam::*:root"
+      ]
+    },
+    {
+      "Sid": "DenyGuardDutyChanges",
+      "Effect": "Deny",
+      "Action": [
+        "guardduty:DeclineInvitations",
+        "guardduty:Disassociate*",
+        "guardduty:DeleteDetector",
+        "guardduty:DeleteInvitations",
+        "guardduty:DeleteIPSet",
+        "guardduty:DeleteMembers",
+        "guardduty:DeleteThreatIntelSet",
+        "guardduty:StopMonitoringMembers",
+        "guardduty:UpdateDetector"
+      ],
+      "Resource": [
+        "arn:aws:iam::*:root"
+      ]
+    },
+    {
+      "Sid": "DenyOrgDelete",
+      "Effect": "Deny",
+      "Action": [
+        "organizations:LeaveOrganization",
+        "organizations:DeleteOrganization"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "DenyEnableDisableRegion",
+      "Effect": "Deny",
+      "Action": [
+        "account:EnableRegion",
+        "account:DisableRegion"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "ArnNotLike": {
+          "aws:PrincipalARN": [
+            "arn:aws:iam::*:role/AWSControlTowerExecution"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3PublicObjectAccess",
+      "Effect": "Deny",
+      "Action": [
+        "s3:PutObjectVersionAcl",
+        "s3:PutObjectAcl"
+      ],
+      "Resource": [
+        "arn:aws:s3:::*/*"
+      ],
+      "Condition": {
+        "StringNotEquals": {
+          "s3:x-amz-acl": [
+            "private"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "S3BucketMustRequireHTTPS",
+      "Effect": "Deny",
+      "Action": "s3:CreateBucket",
+      "Resource": "*",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:TlsVersion": 1.2
+        }
+      }
+    },
+    {
+      "Sid": "DenyChangesOnSecurityHub",
+      "Effect": "Deny",
+      "Action": [
+        "securityhub:A*",
+        "securityhub:B*",
+        "securityhub:C*",
+        "securityhub:Dec*",
+        "securityhub:Del*",
+        "securityhub:Di*",
+        "securityhub:E*",
+        "securityhub:GetEnabledStandards",
+        "securityhub:I*",
+        "securityhub:ListEnabled*",
+        "securityhub:Tag*",
+        "securityhub:U*"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "DenyActionToSpecificCloudFormation",
+      "Effect": "Deny",
+      "Action": [
+        "cloudformation:Cancel*",
+        "cloudformation:Continue*",
+        "cloudformation:Create*",
+        "cloudformation:Delete*",
+        "cloudformation:Detect*",
+        "cloudformation:Execute*",
+        "cloudformation:Record*",
+        "cloudformation:Set*",
+        "cloudformation:Signal*",
+        "cloudformation:TagResource",
+        "cloudformation:UntagResource",
+        "cloudformation:Update*"
+      ],
+      "Resource": [
+        "arn:aws:cloudformation:*:*:stack/StackSet-*ControlTower*",
+        "arn:aws:cloudformation:*:*:stack/StackSet-CustomControlTower*/*"
+      ],
+      "Condition": {
+        "ArnNotLikeIfExists": {
+          "aws:PrincipalARN": [
+            "arn:aws:iam::*:role/AWSControlTowerExecution",
+            "arn:aws:iam::*:role/AWSCloudFormationStackSetExecutionRole"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "PreventLambdaURLsandPublicLambda",
+      "Effect": "Deny",
+      "Action": [
+        "lambda:CreateFunctionUrlConfig",
+        "lambda:UpdateFunctionUrlConfig",
+        "lambda:AddPermission"
+      ],
+      "Resource": "arn:aws:lambda:*:*:function:*"
+    },
+    {
+      "Sid": "DenyS3OutsideofOrg",
+      "Action": [
+        "s3:*"
+      ],
+      "Resource": "*",
+      "Effect": "Deny",
+      "Condition": {
+        "StringNotEquals": {
+          "aws:ResourceOrgID": "o-bj312h8hh6"
+        }
+      }
+    },
+    {
+      "Sid": "DenyKMSActions",
+      "Effect": "Deny",
+      "Action": [
+        "kms:ScheduleKeyDeletion",
+        "kms:Delete*"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "ArnNotLike": {
+          "aws:PrincipalARN": [
+            "arn:aws:iam::*:role/AWSControlTowerExecution",
+            "arn:aws:iam::*:role/service-role/AWSControlTowerAdmin"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "DenyAWSMarketplaceAccess",
+      "Effect": "Deny",
+      "Action": [
+        "aws-marketplace:*"
+      ],
+      "Resource": [
+        "*"
+      ]
+    },
+    {
+      "Sid": "DenyBillingChanges",
+      "Effect": "Deny",
+      "Action": [
+        "aws-portal:ModifyAccount",
+        "aws-portal:ModifyBilling",
+        "aws-portal:ModifyPaymentMethods"
+      ],
+      "Resource": [
+        "*"
+      ],
+      "Condition": {
+        "ArnNotLike": {
+          "aws:PrincipalARN": [
+            "arn:aws:iam::*:role/AWSControlTowerExecution"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "DenyDisableEMRPublicAccessBlock",
+      "Effect": "Deny",
+      "Action": [
+        "elasticmapreduce:PutBlockPublicAccessConfiguration"
+      ],
+      "Resource": [
+        "*"
+      ]
+    },
+    {
+      "Sid": "PreventDisableDomainTransferLock",
+      "Effect": "Deny",
+      "Action": "route53:DisableDomainTransferLock",
+      "Resource": "*"
+    },
+    {
+      "Sid": "PreventPublicSecrets",
+      "Effect": "Deny",
+      "Action": "secretsmanager:PutResourcePolicy",
+      "Resource": "*",
+      "Condition": {
+        "Bool": {
+          "secretsmanager:BlockPublicPolicy": "false"
+        }
+      }
+    },
+    {
+      "Sid": "ProtectRejectServiceCatalog",
+      "Effect": "Deny",
+      "Action": "servicecatalog:RejectPortfolioShare",
+      "Resource": "*",
+      "Condition": {
+        "ArnNotLikeIfExists": {
+          "aws:PrincipalArn": [
+            "arn:aws:iam::*:role/AWSControlTowerExecution"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "ProtectSendMessageToExternalEmail",
+      "Effect": "Deny",
+      "Action": [
+        "sns:Subscribe"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringNotLike": {
+          "sns:Endpoint": [
+            "*@pwc.com",
+            "arn:aws:sqs:*:*:*",
+            "arn:aws:lambda:*:*:*"
+          ]
+        },
+        "StringNotEquals": {
+          "sns:Protocol": [
+            "email",
+            "sqs",
+            "lambda"
+          ]
+        },
+        "ArnNotLikeIfExists": {
+          "aws:PrincipalArn": [
+            "arn:aws:iam::*:role/AWSControlTowerExecution"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "ProtectAssumeAdminRoles",
+      "Effect": "Deny",
+      "Action": "sts:AssumeRole",
+      "Resource": [
+        "arn:aws:iam::*:role/AWSControlTowerExecution",
+        "arn:aws:iam::*:role/AWSReservedSSO*"
+      ],
+      "Condition": {
+        "ArnNotLikeIfExists": {
+          "aws:PrincipalArn": [
+            "arn:aws:iam::*:role/AWSControlTowerExecution"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "AllowOnlyForCertainRoles",
+      "Effect": "Deny",
+      "Action": [
+        "directconnect:Allocate*",
+        "directconnect:Confirm*",
+        "directconnect:Create*",
+        "directconnect:Delete*",
+        "directconnect:Disassociate*",
+        "directconnect:Update*",
+        "ec2:DeleteFlowLogs",
+        "ec2:AcceptTransitGatewayVpcAttachment",
+        "ec2:AcceptVpcEndpointConnections",
+        "ec2:AcceptVpcPeeringConnection",
+        "ec2:AssociateRouteTable",
+        "ec2:AssociateSubnetCidrBlock",
+        "ec2:AssociateTransitGatewayRouteTable",
+        "ec2:AssociateVpcCidrBlock",
+        "ec2:AttachClassicLinkVpc",
+        "ec2:AttachInternetGateway",
+        "ec2:AttachVpnGateway",
+        "ec2:CreateDhcpOptions",
+        "ec2:CreateEgressOnlyInternetGateway",
+        "ec2:CreateInternetGateway",
+        "ec2:CreateNatGateway",
+        "ec2:CreateNetworkAcl",
+        "ec2:CreateNetworkAclEntry",
+        "ec2:CreateRoute",
+        "ec2:CreateRouteTable",
+        "ec2:CreateSubnet",
+        "ec2:CreateTransitGateway*",
+        "ec2:CreateVpc",
+        "ec2:CreateVpcEndpoint",
+        "ec2:CreateVpcEndpointConnectionNotification",
+        "ec2:CreateVpcEndpointServiceConfiguration",
+        "ec2:CreateVpcPeeringConnection",
+        "ec2:CreateVpnConnection",
+        "ec2:CreateVpnConnectionRoute",
+        "ec2:CreateVpnGateway",
+        "ec2:DeleteEgressOnlyInternetGateway",
+        "ec2:DeleteInternetGateway",
+        "ec2:DeleteNatGateway",
+        "ec2:DeleteNetworkAcl",
+        "ec2:DeleteNetworkAclEntry",
+        "ec2:DeleteRoute",
+        "ec2:DeleteRouteTable",
+        "ec2:DeleteSubnet",
+        "ec2:DeleteVpc",
+        "ec2:DeleteVpcEndpointConnectionNotifications",
+        "ec2:DeleteVpcEndpoints",
+        "ec2:DeleteVpcEndpointServiceConfigurations",
+        "ec2:DeleteVpcPeeringConnection",
+        "ec2:DeleteVpnConnection",
+        "ec2:DeleteVpnConnectionRoute",
+        "ec2:DeleteVpnGateway",
+        "ec2:DisableVgwRoutePropagation",
+        "ec2:DisassociateRouteTable",
+        "ec2:EnableVgwRoutePropagation",
+        "ec2:EnableVpcClassicLink",
+        "ec2:EnableVpcClassicLinkDnsSupport",
+        "ec2:ModifySubnetAttribute",
+        "ec2:ModifyVpcAttribute",
+        "ec2:ModifyVpcEndpoint",
+        "ec2:ModifyVpcEndpointConnectionNotification",
+        "ec2:ModifyVpcEndpointServiceConfiguration",
+        "ec2:ModifyVpcEndpointServicePermissions",
+        "ec2:ModifyVpcPeeringConnectionOptions",
+        "ec2:ModifyVpcTenancy",
+        "ec2:RejectVpcEndpointConnections",
+        "ec2:RejectVpcPeeringConnection",
+        "ec2:ReplaceRoute",
+        "ec2:ReplaceRouteTableAssociation",
+        "ram:AcceptResourceShareInvitation",
+        "ram:AssociateResourceShare",
+        "ram:CreateResourceShare",
+        "ram:DeleteResourceShare",
+        "ram:DisassociateResourceShare",
+        "ram:EnableSharingWithAwsOrganization",
+        "ram:RejectResourceShareInvitation",
+        "ram:UpdateResourceShare",
+        "ec2:AssociateAddress",
+        "ec2:AllocateAddress",
+        "logs:DeleteLogGroup",
+        "logs:DeleteLogStream"
+      ],
+      "Resource": [
+        "*"
+      ],
+      "Condition": {
+        "StringNotLike": {
+          "aws:PrincipalARN": [
+            "arn:aws:iam::*:role/AWSCloudFormationStackSetExecutionRole",
+            "arn:aws:iam::*:role/SCVpcTemplatesProductLaunchRole",
+            "arn:aws:iam::*:role/AWSControlTowerExecution",
+            "arn:aws:iam::*:role/VPCProductLaunchLambdaRole",
+            "arn:aws:iam::*:role/CustomRouteTableRole-*"
+          ]
+        }
+      }
+    }
+  ]
+}

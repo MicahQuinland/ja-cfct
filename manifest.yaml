@@ -1,0 +1,192 @@
+---
+# Home region for CodePipeline, StepFunctions, Lambda, SSM, StackSets.
+region: us-east-1  # Control Tower Home Region
+version: 2021-03-15
+enable_stack_set_deletion: false
+
+resources:
+
+  ## SCPs
+  - name: fincrime-guardrails
+    description: fincrime guardrails to replace preventive guardrails
+    resource_file: ./policies/fincrime-scp-services.json
+    deploy_method: scp
+    deployment_targets:
+      organizational_units:
+        - Sandbox
+        - Sandbox-b
+        - Sandbox-c
+
+  - name: fincrime-guardrails-for-COTS
+    description: fincrime guardrails for COTS
+    resource_file: ./policies/fincrime-scp-services-cots.json
+    deploy_method: scp
+    deployment_targets:
+      organizational_units:
+        - COTS
+
+  ## Clouformation 
+  - name: permissions-boundary
+    description: Permission boundary for accounts
+    resource_file: ./templates/permission-boundary.yml
+    deploy_method: stack_set
+    deployment_targets:
+      organizational_units:
+        - Sandbox
+        - Sandbox-b
+        - Sandbox-c
+        - Sandbox:SubSandbox
+    regions:
+        - us-east-1
+
+#   - name: scp1
+#     description: scp1
+#     resource_file: policies/scp-split/baseline-scp-1-no-ip-consolidated.json
+#     deploy_method: scp
+#     deployment_targets: # accounts property is not supported for SCPs
+#       organizational_units:
+#         - Sandbox
+#         # - Security
+#         - Dev
+#         - Shared-Services
+
+#   - name: scp2
+#     description: scp2
+#     resource_file: policies/scp-split/baseline-scp-2-condensed.json
+#     deploy_method: scp
+#     deployment_targets: # accounts property is not supported for SCPs
+#       organizational_units:
+#         - Sandbox
+#         # - Security
+#         - Dev
+#         - Shared-Services
+
+#   - name: scp3
+#     description: scp3
+#     resource_file: policies/scp-split/baseline-scp-3-condensed.json
+#     deploy_method: scp
+#     deployment_targets: # accounts property is not supported for SCPs
+#       organizational_units:
+#         - Sandbox
+#         # - Security
+#         - Dev
+#         - Shared-Services
+
+# ############
+
+#   - name: config-aggregator
+#     resource_file: templates/config-org-aggregator.yaml
+#     deploy_method: stack_set
+#     deployment_targets:
+#       accounts: 
+#         - 423596826538
+#     regions:
+#       - us-east-1
+
+#   - name: rdk-deploy-role
+#     resource_file: templates/rdk-role.yaml
+#     parameters:
+#       - parameter_key: LambdaAccountId
+#         parameter_value: 423596826538
+#     deploy_method: stack_set
+#     deployment_targets:
+#       organizational_units:
+#         - Sandbox
+#         - Security
+#         - Dev
+#         - Shared-Services
+        
+#     regions:
+#       - us-east-1
+
+#   - name: rdk-pipeline2
+#     resource_file: templates/rdk-pipeline-github-noVPC.yaml
+#     deploy_method: stack_set
+#     deployment_targets:
+#       accounts: 
+#         - 423596826538
+#     regions:
+#       - us-east-1
+
+#   - name: regional-fms
+#     resource_file: templates/waf/fms-waf-alb-apigw.yaml
+#     deploy_method: stack_set
+#     deployment_targets:
+#       accounts: 
+#         - 423596826538
+#     regions:
+#       - us-east-1
+#       - us-west-2
+
+#   - name: global-fms
+#     resource_file: templates/waf/fms-waf-cloudfront.yaml
+#     deploy_method: stack_set
+#     deployment_targets:
+#       accounts: 
+#         - 423596826538
+#     regions:
+#       - us-east-1
+
+#   - name: custom-pack
+#     resource_file: templates/conformance-pack-template.yaml
+#     parameters:
+#       - parameter_key: LambdaAccountId
+#         parameter_value: 423596826538
+#       - parameter_key: ConformancePackName
+#         parameter_value: custom-pack2
+#       - parameter_key: TemplateS3Uri
+#         parameter_value: s3://stackset-customcontroltower-rdk-pi-artifactbucket-9zdgt048mrnz/config/custom-env/custom-conforms-pack-template-custom.yaml
+#     deploy_method: stack_set
+#     deployment_targets:
+#       organizational_units:
+#         - Sandbox
+#     regions:
+#       - us-east-1
+#       - us-west-2
+
+#   # - name: managed-pack
+#   #   resource_file: templates/conformance-pack-template.yaml
+#   #   parameters:
+#   #     - parameter_key: LambdaAccountId
+#   #       parameter_value: 423596826538
+#   #     - parameter_key: ConformancePackName
+#   #       parameter_value: managed-pack1
+#   #     - parameter_key: TemplateS3Uri
+#   #       parameter_value: s3://stackset-customcontroltower-rdk-pi-artifactbucket-9zdgt048mrnz/config/custom-env/custom-conforms-pack-template-managed.yaml
+#   #   deploy_method: stack_set
+#   #   deployment_targets:
+#   #     organizational_units:
+#   #       - Dev
+#   #   regions:
+#   #     - us-east-1
+#   #     - us-west-2
+
+#   - name: managed-cis-org
+#     resource_file: templates/managed-organization-conformance-pack-template.yaml
+#     parameters:
+#       - parameter_key: ConformancePackName
+#         parameter_value: managed-cis-org
+#       - parameter_key: TemplateS3Uri
+#         parameter_value: s3://stackset-customcontroltower-rdk-pi-artifactbucket-9zdgt048mrnz/config/managed-org/Operational-Best-Practices-for-CIS-Critical-Security-Controls-v8-IG3.yaml
+#     deploy_method: stack_set
+#     deployment_targets:
+#       accounts: 
+#         - 423596826538
+#     regions:
+#       - us-east-1
+#       - us-west-2
+
+#   - name: managed-cmmc-org
+#     resource_file: templates/managed-organization-conformance-pack-template.yaml
+#     parameters:
+#       - parameter_key: ConformancePackName
+#         parameter_value: managed-cmmc-org
+#       - parameter_key: TemplateS3Uri
+#         parameter_value: s3://stackset-customcontroltower-rdk-pi-artifactbucket-9zdgt048mrnz/config/managed-org/Operational-Best-Practices-for-CMMC-Level-5.yaml
+#     deploy_method: stack_set
+#     deployment_targets:
+#       accounts: 
+#         - 423596826538
+#     regions:
+#       - us-east-1
+#       - us-west-2

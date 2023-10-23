@@ -1,0 +1,126 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [{
+        "Sid": "PrivateApisOnly",
+        "Effect": "Deny",
+        "Action": ["apigateway:DELETE", "apigateway:PATCH", "apigateway:POST", "apigateway:PUT"],
+        "Resource": ["arn:aws:apigateway:us-east-1::/restapis", "arn:aws:apigateway:us-east-1::/restapis/*"],
+        "Condition": {
+            "ForAllValues:StringNotEqualsIfExists": {
+                "apigateway:Request/EndpointType": "PRIVATE",
+                "apigateway:Resource/EndpointType": "PRIVATE"
+            }
+        }
+    }, {
+        "Sid": "ProtectS3AccountPublicAccessBlock",
+        "Effect": "Deny",
+        "Action": "s3:PutAccountPublicAccessBlock",
+        "Resource": "*"
+    }, {
+        "Sid": "ProtectCreatePublicBucket",
+        "Effect": "Deny",
+        "Action": ["s3:PutBucketAcl", "s3:CreateBucket"],
+        "Resource": "*",
+        "Condition": {
+            "StringLike": {
+                "s3:x-amz-acl": ["public-read", "public-read-write"]
+            }
+        }
+    }, {
+        "Sid": "PreventS3PublicObjectAccess",
+        "Effect": "Deny",
+        "Action": ["s3:PutObjectVersionAcl", "s3:PutObjectAcl"],
+        "Resource": ["arn:aws:s3:::*/*"],
+        "Condition": {
+            "StringNotEquals": {
+                "s3:x-amz-acl": "private"
+            }
+        }
+    }, {
+        "Sid": "ProtectUpdatePolicyOnObject",
+        "Effect": "Deny",
+        "Action": "s3:PutObjectAcl",
+        "Resource": "*",
+        "Condition": {
+            "StringNotLike": {
+                "s3:x-amz-acl": "bucket-owner-full-control"
+            },
+            "ArnNotLikeIfExists": {
+                "aws:PrincipalArn": ["arn:aws:iam::*:role/AWSControlTowerExecution"]
+            }
+        }
+    }, {
+        "Sid": "S3BucketMustRequireHTTPS",
+        "Effect": "Deny",
+        "Action": "s3:CreateBucket",
+        "Resource": "*",
+        "Condition": {
+            "NumericLessThan": {
+                "s3:TlsVersion": 1.2
+            }
+        }
+    }, {
+        "Sid": "ProtectS3Buckets",
+        "Effect": "Deny",
+        "Action": ["s3:DeleteBucketPolicy", "s3:DeleteBucket", "s3:DeleteBucketWebsite", "s3:DeleteObject"],
+        "Resource": "*",
+        "Condition": {
+            "ArnNotLike": {
+                "aws:PrincipalARN": ["arn:aws:iam::*:role/ADMIN", "arn:aws:iam::*:role/AWSControlTowerExecution", "arn:aws:iam::*:role/service-role/AWSControlTowerAdmin"]
+            }
+        }
+    }, {
+        "Sid": "DenyUnencryptedS3ObjectUpload",
+        "Effect": "Deny",
+        "Action": ["s3:PutObject"],
+        "Resource": ["arn:aws:s3:::*/*"],
+        "Condition": {
+            "Null": {
+                "s3:x-amz-server-side-encryption": "true"
+            }
+        }
+    }, {
+        "Sid": "PreventPublicSecrets",
+        "Effect": "Deny",
+        "Action": "secretsmanager:PutResourcePolicy",
+        "Resource": "*",
+        "Condition": {
+            "Bool": {
+                "secretsmanager:BlockPublicPolicy": "false"
+            }
+        }
+    }, {
+        "Sid": "ProtectReservedRDS",
+        "Effect": "Deny",
+        "Action": "rds:PurchaseReserved*",
+        "Resource": "*",
+        "Condition": {
+            "ArnNotLikeIfExists": {
+                "aws:PrincipalArn": ["arn:aws:iam::*:role/AWSControlTowerExecution", "arn:aws:iam::*:role/Admin"]
+            }
+        }
+    }, {
+        "Sid": "ProtectRDSEncryption",
+        "Effect": "Deny",
+        "Action": "rds:CreateDBInstance",
+        "Resource": "*",
+        "Condition": {
+            "ForAnyValue:StringEquals": {
+                "rds:DatabaseEngine": ["mariadb", "mysql", "oracle-ee", "oracle-se2", "oracle-se1", "oracle-se", "postgres", "sqlserver-ee", "sqlserver-se", "sqlserver-ex", "sqlserver-web"]
+            },
+            "Bool": {
+                "rds:StorageEncrypted": "false"
+            }
+        }
+    }, {
+        "Sid": "ProtectRDSClusterEncryption",
+        "Effect": "Deny",
+        "Action": "rds:CreateDBCluster",
+        "Resource": "*",
+        "Condition": {
+            "Bool": {
+                "rds:StorageEncrypted": "false"
+            }
+        }
+    }]
+}

@@ -1,0 +1,112 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: IAM policy to be attached to permission set as permission boundary
+Resources:
+  PermissionBoundryPolicy:
+    Type: 'AWS::IAM::ManagedPolicy'
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: F40
+            reason: this is a baseline permission boundary  
+          - id: F5
+            reason: this is a baseline permission boundary 
+    Properties:
+      Description: IAM policy to be attached to permission set as permission boundary
+      ManagedPolicyName: account-admin-permission-boundary
+      Path: /
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+              - '*'
+            Resource: '*'
+          - Effect: Deny 
+            Action:
+              - "iam:TagUser"
+              - "iam:UntagUser"
+              - "iam:UpdateLoginProfile"
+              - "iam:CreateLoginProfile"
+              - "iam:DeleteLoginProfile"
+              - "iam:GetLoginProfile"
+              - "iam:UpdateSigningCertificate"
+              - "iam:DeleteSigningCertificate"
+              - "iam:ListMFADevices"
+              - "iam:CreateVirtualMFADevice"
+              - "iam:DeactivateMFADevice"
+              - "iam:DeleteVirtualMFADevice"
+              - "iam:EnableMFADevice"
+              - "iam:CreateAccessKey"
+              - "iam:DeleteAccessKey"
+              - "iam:DeleteUser"
+              - "iam:DeleteRole"
+              - "iam:DeleteUserPermissionsBoundary"
+              - "iam:DeleteRolePermissionsBoundary"
+              - "iam:CreateUser"
+              - "iam:CreateGroup"
+            Resource:
+              - "arn:aws:iam::*:user/*"
+              - "arn:aws:iam::*:role/*"
+              - "arn:aws:iam::*:policy/*"
+          - Effect: Deny 
+            Action:
+              - "account:PutAlternateContact"
+              - "account:EnableRegion"
+              - "account:DisableRegion"
+              - "account:DeleteAlternateContact"
+              - "aws-portal:Modify*"
+              - "config:Delete*"
+              - "config:Stop*"
+              - "config:Put*"
+              - "config:Start*"
+              - "cloudtrail:Start*"
+              - "cloudtrail:Stop*"
+              - "cloudtrail:Delete*"
+              - "cloudtrail:Put*"
+              - "controltower:*"
+              - "ds:Create*"
+              - "ds:Disable*"
+              - "ds:Delete*"
+              - "ds:Enable*"
+              - "detective:*"
+              - "guardduty:*"
+              - "inspector:*"
+              - "inspector2:Disable"
+              - "inspector2:Delete*"
+              - "inspector2:Enable*"
+              - "inspector2:CancelFindingsReport"
+              - "inspector2:AssociateMember"
+              - "inspector2:DisassociateMember"
+              - "iam:Delete*"
+              - "sts:AssumeRole"
+              - "fms:*"
+              - "waf:*"
+              - "waf-regional:*"
+              - "wafv2:Create*"
+              - "wafv2:Delete*"
+              - "wafv2:Update*"
+              - "route53domains:*"
+              - "sso:*"
+              - "s3:PutBucketPublicAccessBlock"
+              - "securityhub:Create*"
+              - "securityhub:*Enable*"
+              - "securityhub:Disable*"
+              - "securityhub:Delete*"
+              - "securityhub:*Update*"
+              - "securityhub:*Members*"
+              - "securityhub:Accept*"
+              - "securityhub:DisassociateFromMasterAccount"
+              - "securityhub:*Import*"
+              - "organizations:*"
+            Resource:
+              - "arn:aws:iam::*:user/*"
+              - "arn:aws:iam::*:role/*"
+              - "arn:aws:iam::*:policy/*"
+          - Effect: Deny
+            Action:
+              - "iam:DeleteUserPermissionsBoundary"
+              - "iam:DeleteRolePermissionsBoundary"
+            Resource:
+              - "arn:aws:iam::*:user/*"
+              - "arn:aws:iam::*:role/*"
+          

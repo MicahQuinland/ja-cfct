@@ -1,0 +1,71 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  RegionalIPSet:
+    Type: 'AWS::WAFv2::IPSet'
+    Properties:
+      Description: Regional IPSet for API GW and ALB whitelist
+      Name: APIGW-ALB-IPSet
+      Scope: REGIONAL
+      IPAddressVersion: IPV4
+      Addresses:
+        - 24.125.118.95/32
+
+  RegionalRuleGroup:
+    Type: 'AWS::WAFv2::RuleGroup'
+    Properties:
+      Name: APIGW-ALB-RuleGroup
+      Scope: REGIONAL
+      Description: Regional Rule Group for API GW and ALB whitelist
+      VisibilityConfig:
+        SampledRequestsEnabled: true
+        CloudWatchMetricsEnabled: true
+        MetricName: RegionalWAFRuleGroupMetrics
+      Capacity: 1
+      Rules:
+        - Name: RuleOne
+          Priority: 0
+          Statement:
+            IPSetReferenceStatement:
+              Arn: !GetAtt RegionalIPSet.Arn
+          Action:
+            Allow: {}
+          VisibilityConfig:
+            SampledRequestsEnabled: true
+            CloudWatchMetricsEnabled: true
+            MetricName: regionalwafipsetmetric
+
+  APIGWPolicy1:
+      Type: AWS::FMS::Policy
+      Properties:
+        ExcludeResourceTags: false
+        PolicyName: APIGW-WAF-Policy1
+        RemediationEnabled: true
+        ResourceType: AWS::ApiGateway::Stage
+        ResourcesCleanUp: true
+        SecurityServicePolicyData:
+          Type: WAFV2
+          ManagedServiceData: !Sub '{"type":"WAFV2",
+                                  "preProcessRuleGroups":[{
+                                  "ruleGroupType":"RuleGroup",
+                                  "ruleGroupArn":"${RegionalRuleGroup.Arn}",
+                                  "overrideAction":{"type":"NONE"}}],
+                                  "postProcessRuleGroups":[],
+                                  "defaultAction":{"type":"BLOCK"}}'
+
+  ALBPolicy1:
+      Type: AWS::FMS::Policy
+      Properties:
+        ExcludeResourceTags: false
+        PolicyName: ALB-WAF-Policy1
+        RemediationEnabled: true
+        ResourceType: AWS::ElasticLoadBalancingV2::LoadBalancer
+        ResourcesCleanUp: true
+        SecurityServicePolicyData:
+          Type: WAFV2
+          ManagedServiceData: !Sub '{"type":"WAFV2",
+                                  "preProcessRuleGroups":[{
+                                  "ruleGroupType":"RuleGroup",
+                                  "ruleGroupArn":"${RegionalRuleGroup.Arn}",
+                                  "overrideAction":{"type":"NONE"}}],
+                                  "postProcessRuleGroups":[],
+                                  "defaultAction":{"type":"BLOCK"}}'
