@@ -115,20 +115,41 @@ resources:
       - us-east-1
       - us-west-2
 
-  - name: managed-cis-org
-    resource_file: templates/managed-organization-conformance-pack-template.yaml
+  - name: managed-cis-pack
+    resource_file: templates/conformance-pack-template.yaml
     parameters:
+      - parameter_key: LambdaAccountId
+        parameter_value: 564707250760
       - parameter_key: ConformancePackName
-        parameter_value: managed-cis-org
+        parameter_value: managed-cis-pack
       - parameter_key: TemplateS3Uri
         parameter_value: s3://stackset-customcontroltower-rdk-pi-artifactbucket-1jdqxxwr301r3/config/managed-org/Operational-Best-Practices-for-CIS-Critical-Security-Controls-v8-IG3.yaml
     deploy_method: stack_set
     deployment_targets:
-      accounts: 
-        - 564707250760
+      organizational_units:
+        - Sandbox
+        - Sandbox-b
+        - Sandbox-c
+        - COTS
+        - Shared Services
     regions:
       - us-east-1
       - us-west-2
+
+  # - name: managed-cis-org
+  #   resource_file: templates/managed-organization-conformance-pack-template.yaml
+  #   parameters:
+  #     - parameter_key: ConformancePackName
+  #       parameter_value: managed-cis-org
+  #     - parameter_key: TemplateS3Uri
+  #       parameter_value: s3://stackset-customcontroltower-rdk-pi-artifactbucket-1jdqxxwr301r3/config/managed-org/Operational-Best-Practices-for-CIS-Critical-Security-Controls-v8-IG3.yaml
+  #   deploy_method: stack_set
+  #   deployment_targets:
+  #     accounts: 
+  #       - 564707250760
+  #   regions:
+  #     - us-east-1
+  #     - us-west-2
 
   # - name: managed-cmmc-org
   #   resource_file: templates/managed-organization-conformance-pack-template.yaml
