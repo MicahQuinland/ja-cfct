@@ -2,7 +2,7 @@
 # Home region for CodePipeline, StepFunctions, Lambda, SSM, StackSets.
 region: us-east-1  # Control Tower Home Region
 version: 2021-03-15
-enable_stack_set_deletion: false
+#enable_stack_set_deletion: false
 
 resources:
 

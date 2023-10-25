@@ -25,6 +25,7 @@ Resources:
   NGCConfigAggregatorRole:
       Type: AWS::IAM::Role
       Properties: 
+          RoleName: ngc-config-aggregator-sandbox
           ManagedPolicyArns: 
               - arn:aws:iam::aws:policy/service-role/AWSConfigRoleForOrganizations
           Path: "/service-role/"
