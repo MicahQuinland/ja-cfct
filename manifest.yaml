@@ -73,6 +73,7 @@ resources:
     deployment_targets:
       organizational_units:
         - Sandbox
+        - SubSandbox
         - Sandbox-b
         - Sandbox-c
         - COTS
