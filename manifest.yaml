@@ -31,7 +31,7 @@ resources:
         - COTS
         - Shared Services
 
-  - name: scp-micah
+  - name: scp-micah2
     description: scp-micah
     resource_file: policies/scp-split/micah.json
     deploy_method: scp
