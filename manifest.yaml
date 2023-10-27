@@ -7,6 +7,15 @@ version: 2021-03-15
 resources:
 
   ## SCPs
+
+  - name: micahscp-test
+    description: micahscp-test
+    resource_file: policies/scp-split/micah.json
+    deploy_method: scp
+    deployment_targets: # accounts property is not supported for SCPs
+      organizational_units:
+      
+
   - name: scp1
     description: scp1
     resource_file: policies/scp-split/baseline-scp-1-no-ip-consolidated.json
@@ -30,18 +39,6 @@ resources:
         - Sandbox-c
         - COTS
         - Shared Services
-
-  - name: scp-micah2
-    description: scp-micah
-    resource_file: policies/scp-split/micah.json
-    deploy_method: scp
-    deployment_targets: # accounts property is not supported for SCPs
-      organizational_units:
-    #     - Sandbox
-    #     - Sandbox-b
-    #     - Sandbox-c
-    #     - COTS
-    #     - Shared Services
 
 # Governance Stacks
 
